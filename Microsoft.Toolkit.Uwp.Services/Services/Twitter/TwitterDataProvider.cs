@@ -636,7 +636,7 @@ namespace Microsoft.Toolkit.Uwp.Services.Twitter
 
         /// <summary>
         /// Build signature base string.
-        /// 建立基本字符串签名
+        /// 建立基本字符串签名，参数按字母表顺序排列
         /// </summary>
         /// <param name="consumerKey">Consumer Key.</param>
         /// <param name="nonce">Nonce.</param>
@@ -650,6 +650,19 @@ namespace Microsoft.Toolkit.Uwp.Services.Twitter
             sigBaseStringParams += "&" + "oauth_nonce=" + nonce;
             sigBaseStringParams += "&" + "oauth_signature_method=HMAC-SHA1";
             sigBaseStringParams += "&" + "oauth_timestamp=" + timeStamp;
+            sigBaseStringParams += "&" + "oauth_version=1.0";
+
+            return sigBaseStringParams;
+        }
+
+        // 第二次签名，参数不按字母表顺序排列
+        private string GetSignatureBaseStringParams2(string consumerKey, string nonce, string timeStamp, string additionalParameters = "")
+        {
+            string sigBaseStringParams = additionalParameters;
+            sigBaseStringParams += "&" + "oauth_nonce=" + nonce;
+            sigBaseStringParams += "&" + "oauth_timestamp=" + timeStamp;
+            sigBaseStringParams += "&" + "oauth_consumer_key=" + consumerKey;
+            sigBaseStringParams += "&" + "oauth_signature_method=HMAC-SHA1";
             sigBaseStringParams += "&" + "oauth_version=1.0";
 
             return sigBaseStringParams;
@@ -679,7 +692,7 @@ namespace Microsoft.Toolkit.Uwp.Services.Twitter
             string timeStamp = GetTimeStamp();
             string nonce = GetNonce();
 
-            string sigBaseStringParams = GetSignatureBaseStringParams(_tokens.ConsumerKey, nonce, timeStamp, "oauth_token=" + requestToken);
+            string sigBaseStringParams = GetSignatureBaseStringParams2(_tokens.ConsumerKey, nonce, timeStamp, "oauth_token=" + requestToken);
 
             string sigBaseString = "POST&";
             sigBaseString += Uri.EscapeDataString(twitterUrl) + "&" + Uri.EscapeDataString(sigBaseStringParams);
@@ -741,10 +754,10 @@ namespace Microsoft.Toolkit.Uwp.Services.Twitter
 
         /// <summary>
         /// Generate request signature.
-        /// 产生请求签名
+        /// 产生请求签名，使用HMAC_SHA1加密算法
         /// </summary>
         /// <param name="sigBaseString">Base string.</param>
-        /// <param name="consumerSecretKey">Consumer secret key.</param>
+        /// <param name="consumerSecretKey">Consumer secret key.</param> 
         /// <returns>Signature.</returns>
         private string GetSignature(string sigBaseString, string consumerSecretKey)
         {
