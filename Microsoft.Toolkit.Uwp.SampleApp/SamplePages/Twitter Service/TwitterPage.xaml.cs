@@ -47,6 +47,7 @@ namespace Microsoft.Toolkit.Uwp.SampleApp.SamplePages
             Shell.Current.DisplayWaitRing = true;
 
             // 初始化
+            // initialize
             TwitterService.Instance.Initialize(ConsumerKey.Text, ConsumerSecret.Text, CallbackUri.Text);
 
             if (!await TwitterService.Instance.LoginAsync())

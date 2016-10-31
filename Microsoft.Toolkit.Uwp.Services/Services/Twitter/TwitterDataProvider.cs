@@ -269,16 +269,19 @@ namespace Microsoft.Toolkit.Uwp.Services.Twitter
             var twitterCredentials = PasswordCredential;
 
             // 判断密码证书!=null读取本地存储
-            //if (twitterCredentials != null)
-            //{
+            // if (twitterCredentials != null)
+            // {
             //    _tokens.AccessToken = twitterCredentials.UserName;
             //    _tokens.AccessTokenSecret = twitterCredentials.Password;
             //    UserScreenName = ApplicationData.Current.LocalSettings.Values["TwitterScreenName"].ToString();
             //    LoggedIn = true;
             //    return true;
-            //}
+            // }
 
-            // （第一次网络请求封装在此）在这里判断结果，确认CallbackUri与设置的CallbackUri一致
+            // （第一次网络请求封装在此）在这里判断结果，确认CallbackUri与设置的CallbackUri一致,验证客户端身份
+            // before asking for granting of resource owner to  access to the
+            // resource, it must first establish a set of temporary credentials with
+            // consumer to identify the delegation request
             if (await InitializeRequestAccessTokensAsync(_tokens.CallbackUri) == false)
             {
                 LoggedIn = false;
@@ -292,6 +295,7 @@ namespace Microsoft.Toolkit.Uwp.Services.Twitter
             Uri endUri = new Uri(_tokens.CallbackUri);
 
             // UWP封装好的验证请求，第二次网络请求，获取的oauth_token是被认证之后的
+            // encapsulated class for Authenticate in uwp
             var result = await WebAuthenticationBroker.AuthenticateAsync(WebAuthenticationOptions.None, startUri, endUri);
 
             switch (result.ResponseStatus)
