@@ -9,6 +9,12 @@
 // TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH
 // THE CODE OR THE USE OR OTHER DEALINGS IN THE CODE.
 // ******************************************************************
+// key:
+// iCc1iibyb6KIbJwIt4RcuXvLH
+// password:
+// vZ8WS5jYbZjwMEH8Tg0nxW39U1BNTB8SKwr2x8M5hDpiNJpqQD
+// callback:
+// http://www.baidu.com
 
 using System;
 using System.Collections.Generic;
@@ -84,7 +90,7 @@ namespace Microsoft.Toolkit.Uwp.Services.Twitter
                 throw new ArgumentNullException(nameof(callbackUri));
             }
 
-            // 面向对象，将请求需要的信息存储在TwitterOAuthTokens类的一个对象中
+            // 面向对象，将请求需要的信息存储在TwitterOAuthTokens类的一个对象中,进行传递
             var oAuthTokens = new TwitterOAuthTokens
             {
                 ConsumerKey = consumerKey,
