@@ -16,6 +16,8 @@ using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
+using Windows.Storage.Streams;
+using System.Collections.Generic;
 
 namespace Microsoft.Toolkit.Uwp.SampleApp.SamplePages
 {
@@ -132,14 +134,19 @@ namespace Microsoft.Toolkit.Uwp.SampleApp.SamplePages
             };
             openPicker.FileTypeFilter.Add(".jpg");
             openPicker.FileTypeFilter.Add(".png");
-            StorageFile picture = await openPicker.PickSingleFileAsync();
-            if (picture != null)
+            var pictures = await openPicker.PickMultipleFilesAsync();
+            int num = pictures.Count;
+            List<IRandomAccessStream> streams = new List<IRandomAccessStream>();
+            foreach (var picture in pictures)
             {
-                using (var stream = await picture.OpenReadAsync())
-                {
-                    await TwitterService.Instance.TweetStatusAsync(TweetText.Text, stream);
-                }
+                var stream = await picture.OpenReadAsync();
+                    streams.Add(stream);
             }
+
+            await TwitterService.Instance.TweetStatusAsync("nihao", streams.ToArray());
+            //if (picture != null)
+            //{
+            //}
         }
 
         private void CredentialsBoxExpandButton_OnClick(object sender, RoutedEventArgs e)

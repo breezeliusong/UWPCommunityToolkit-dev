@@ -278,7 +278,7 @@ namespace Microsoft.Toolkit.Uwp.Services.Twitter
             //    return true;
             // }
 
-            // （第一次网络请求封装在此）在这里判断结果，确认CallbackUri与设置的CallbackUri一致,验证客户端身份
+            // （第一次网络请求封装在此）在这里判断结果,验证客户端身份
             // before asking for granting of resource owner to  access to the
             // resource, it must first establish a set of temporary credentials with
             // consumer to identify the delegation request
@@ -294,7 +294,7 @@ namespace Microsoft.Toolkit.Uwp.Services.Twitter
             Uri startUri = new Uri(twitterUrl);
             Uri endUri = new Uri(_tokens.CallbackUri);
 
-            // UWP封装好的验证请求，第二次网络请求，获取的oauth_token是被认证之后的
+            // UWP封装好的验证请求，第二次网络请求，(里面封装了对服务器的两次请求)获取的oauth_token是被授权之后的
             // encapsulated class for Authenticate in uwp
             var result = await WebAuthenticationBroker.AuthenticateAsync(WebAuthenticationOptions.None, startUri, endUri);
 
@@ -303,6 +303,8 @@ namespace Microsoft.Toolkit.Uwp.Services.Twitter
                 case WebAuthenticationStatus.Success:
                     LoggedIn = true;
                     Debug.WriteLine(result.ResponseData);
+
+                    // 第三次网络请求
                     return await ExchangeRequestTokenForAccessTokenAsync(result.ResponseData);
                 case WebAuthenticationStatus.ErrorHttp:
                     Debug.WriteLine("WAB failed, message={0}", result.ResponseErrorDetail.ToString());
